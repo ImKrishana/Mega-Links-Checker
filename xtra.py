@@ -114,8 +114,8 @@ CHECK_FORMAT = (
     'Lɪɴᴋ : <a href="{link}">Cʟɪᴄᴋ Hᴇʀᴇ</a>'
 )
 
-LINK_REGEX = r'https:\/\/mega\.nz\/(?:file|folder)\/[\w-]+(?:#[\w-]+)?'
-API_URL = "https://mega-checker-api.onrender.com/api"
+LINK_REGEX = r'https:\/\/(?:www\.)?(?:mega\.nz|mega\.co\.nz)\/(?:file|folder)\/[\w-]+(?:#[\w-]+)?'
+API_URL = "https://mega-checker-api-9qj8.onrender.com/api"
 
 def parse_mega_json(data, link):
     name = data.get("name", "-")
@@ -152,7 +152,8 @@ async def send_log(client, user, links, results):
 
 async def check_single_link(link):
     try:
-        async with SESSION.post(API_URL, json={"url": link}) as resp:
+        timeout = aiohttp.ClientTimeout(total=60)
+        async with SESSION.post(API_URL, json={"url": link}, timeout=timeout) as resp:
             data = await resp.json()
     except:
         return None
