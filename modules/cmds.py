@@ -48,6 +48,10 @@ API_URL = "https://mega-checker-api-9qj8.onrender.com/api"
 SESSION = None
 
 
+def get_sender(message):
+    return message.from_user or message.sender_chat
+
+
 def parse_mega_json(data, link):
     return CHECK_FORMAT.format(
         name=data.get("name", "-"),
@@ -76,7 +80,8 @@ async def close_session():
 
     SESSION = None
 
-async def send_log(client, user, links, results):
+
+async def send_log(client, sender, links, results):
     if not Config.LOG_CHANNEL:
         return
 
@@ -86,10 +91,20 @@ async def send_log(client, user, links, results):
             f"Valid: {len(results)}"
         )
 
+        if sender is None:
+            name, uid = "Unknown", 0
+        else:
+            uid = sender.id
+            name = (
+                getattr(sender, "mention", None)
+                or getattr(sender, "title", None)
+                or "Unknown"
+            )
+
         text = (
             "<b>MEGA Cʜᴇᴄᴋ Lᴏɢ</b>\n\n"
-            f"<b>Uѕᴇʀ:</b> {user.mention}\n"
-            f"<b>Uѕᴇʀ ID:</b> <code>{user.id}</code>\n"
+            f"<b>Uѕᴇʀ:</b> {name}\n"
+            f"<b>Uѕᴇʀ ID:</b> <code>{uid}</code>\n"
             f"<b>Lɪɴᴋs:</b> <code>{len(links)}</code>\n"
             f"<b>Vᴀʟɪᴅ:</b> <code>{len(results)}</code>\n\n"
             + "\n\n".join(results)
@@ -109,6 +124,7 @@ async def send_log(client, user, links, results):
             exc_info=True
         )
 
+
 async def auto_check_mega(client, message):
     text = message.text or message.caption or ""
 
@@ -119,8 +135,11 @@ async def auto_check_mega(client, message):
     if not links:
         return
 
+    sender = get_sender(message)
+    sender_id = sender.id if sender else 0
+
     LOGGER.info(
-        f"MEGA check started - User: {message.from_user.id} | "
+        f"MEGA check started - User: {sender_id} | "
         f"Links: {len(links)}"
     )
 
@@ -170,13 +189,13 @@ async def auto_check_mega(client, message):
     ]
 
     LOGGER.info(
-        f"MEGA check completed - User: {message.from_user.id} | "
+        f"MEGA check completed - User: {sender_id} | "
         f"Valid: {len(results)}/{len(links)}"
     )
 
     await send_log(
         client,
-        message.from_user,
+        sender,
         links,
         results,
     )
@@ -209,13 +228,12 @@ async def auto_check_mega(client, message):
         wait,
         "\n\n".join(results),
         buttons,
-                  )
-    
+    )
+
+
 @new_task
 async def start_cmd(client, message):
     try:
-        userid = message.from_user.id
-
         buttons = ButtonMaker()
         buttons.url_button(
             "Rᴇᴘᴏ",
@@ -235,11 +253,13 @@ async def start_cmd(client, message):
             ),
         )
 
-        await database.set_pm_users(userid)
+        if message.from_user:
+            await database.set_pm_users(message.from_user.id)
 
     except Exception as e:
         LOGGER.error(e, exc_info=True)
-        
+
+
 @new_task
 async def restart(_, message):
     try:
@@ -261,6 +281,7 @@ async def restart(_, message):
     except Exception as e:
         LOGGER.error(e, exc_info=True)
 
+
 @new_task
 async def ping(_, message):
     start_time = monotonic()
@@ -279,3 +300,4 @@ async def ping(_, message):
             f"<code>{int((end_time - start_time) * 1000)} ms</code>"
         )
     )
+    
