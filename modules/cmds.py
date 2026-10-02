@@ -237,7 +237,7 @@ async def start_cmd(client, message):
         buttons = ButtonMaker()
         buttons.url_button(
             "Rᴇᴘᴏ",
-            "https://github.com/XalFH/Mega-Links-Checker",
+            "https://github.com/Imkrishana/Mega-Links-Checker",
             style=ButtonStyle.PRIMARY,
         )
 
