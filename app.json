@@ -1,33 +1,50 @@
 {
-  "name": "Mega-Links-Checker",
-  "description": "A Telegram bot to check MEGA.nz links displays file/folder names, sizes, lists files and folders in with log channel support.",
-  "repository": "https://github.com/XalFH/Mega-Links-Checker",
-  "keywords": ["telegram", "bot", "mega", "file-checker"],
+  "name": "Mega Links Checker",
+  "description": "Telegram bot for checking Mega links.",
+  "repository": "https://github.com/ImKrishana/Mega-Links-Checker",
+  "logo": "",
+  "keywords": [
+    "telegram",
+    "bot",
+    "mega",
+    "python"
+  ],
   "env": {
     "API_ID": {
-      "description": "Your Telegram API ID from my.telegram.org",
+      "description": "Telegram API ID",
       "required": true
     },
     "API_HASH": {
-      "description": "Your Telegram API Hash from my.telegram.org",
+      "description": "Telegram API Hash",
       "required": true
     },
     "BOT_TOKEN": {
-      "description": "Your Telegram bot token from @BotFather",
+      "description": "Telegram Bot Token",
+      "required": true
+    },
+    "OWNER_ID": {
+      "description": "Bot owner Telegram user ID",
+      "required": true
+    },
+    "DATABASE_URL": {
+      "description": "MongoDB connection URL",
       "required": true
     },
     "LOG_CHANNEL": {
-      "description": "Optional: Telegram channel ID for logs",
-      "required": false
+      "description": "Log channel IDs",
+      "required": false,
+      "value": "[]"
+    },
+    "PORT": {
+      "description": "Web server port",
+      "required": false,
+      "value": "8080"
     }
   },
-  "buildpacks": [
-    {
-      "url": "heroku/python"
+  "formation": {
+    "web": {
+      "quantity": 1,
+      "size": "standard-1x"
     }
-  ],
-  "addons": [],
-  "scripts": {
-    "postdeploy": "echo 'Mega-Links-Checker bot deployed on Heroku!'"
   }
 }

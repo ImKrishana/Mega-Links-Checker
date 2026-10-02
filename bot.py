@@ -1,27 +1,43 @@
-from pyrogram import Client
-from uvloop import install
-import asyncio
-from config import API_ID, API_HASH, BOT_TOKEN
-
-install()
-
-try:
-    asyncio.get_event_loop()
-except RuntimeError:
-    loop = asyncio.new_event_loop()
-    asyncio.set_event_loop(loop)
-
-Bot = Client(
-    "MegaCheckerBot",
-    api_id=API_ID,
-    api_hash=API_HASH,
-    bot_token=BOT_TOKEN,
-    plugins={"root": "plugins"},
-    workers=50
+from asyncio import new_event_loop, set_event_loop
+from logging import (
+    ERROR,
+    INFO,
+    WARNING,
+    FileHandler,
+    StreamHandler,
+    basicConfig,
+    getLogger,
 )
 
-Bot.start()
-print("Echo Client started.")
+from uvloop import install
+from pyrogram import Client
+from core.config_manager import Config
+install()
 
-Bot.me = Bot.get_me()
-print(f"Echo Bot Started: {Bot.me.username}")
+bot_loop = new_event_loop()
+set_event_loop(bot_loop)
+
+getLogger("pyrogram").setLevel(ERROR)
+getLogger("pymongo").setLevel(WARNING)
+getLogger("aiohttp").setLevel(WARNING)
+
+basicConfig(
+    format="[%(asctime)s] [%(levelname)s] - %(message)s",
+    datefmt="%d-%b-%y %I:%M:%S %p",
+    handlers=[FileHandler("log.txt"), StreamHandler()],
+    level=INFO,
+)
+
+LOGGER = getLogger(__name__)
+
+auth_chats = {}
+user_data = {}
+
+Zake = Client(
+    "TheZakeBot",
+    api_id=Config.API_ID,
+    api_hash=Config.API_HASH,
+    bot_token=Config.BOT_TOKEN,
+    workers=50,
+    in_memory=True
+)

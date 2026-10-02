@@ -1,0 +1,24 @@
+services:
+  - type: web
+    name: MegaLinksChecker
+    runtime: python
+    repo: https://github.com/ImKrishana/Mega-Links-Checker
+    branch: dev
+    plan: free
+    envVars:
+      - key: API_ID
+        sync: false
+      - key: API_HASH
+        sync: false
+      - key: BOT_TOKEN
+        sync: false
+      - key: OWNER_ID
+        sync: false
+      - key: DATABASE_URL
+        sync: false
+      - key: LOG_CHANNEL
+        sync: false
+    region: singapore
+    buildCommand: pip install -r requirements.txt
+    startCommand: python3 main.py
+    autoDeployTrigger: "off"

@@ -1,15 +1,29 @@
-import os
-from http.server import BaseHTTPRequestHandler, HTTPServer
+from aiohttp import web
 
-PORT = int(os.environ.get("PORT", 8080))
 
-class SimpleHandler(BaseHTTPRequestHandler):
-    def do_GET(self):
-        self.send_response(200)
-        self.end_headers()
-        self.wfile.write(b"Hello World")
+async def health(request):
+    return web.json_response({
+        "status": "ok",
+        "service": "thezake"
+    })
 
-if __name__ == "__main__":
-    server = HTTPServer(("0.0.0.0", PORT), SimpleHandler)
-    print(f"Web server started on port {PORT}")
-    server.serve_forever()
+
+async def home(request):
+    return web.Response(text="Hit @TheZake on TG")
+
+
+async def start_web(port):
+    app = web.Application()
+
+    app.router.add_get("/", home)
+    app.router.add_get("/health", health)
+    app.router.add_get("/healthz", health)
+    app.router.add_get("/ping", health)
+
+    runner = web.AppRunner(app)
+    await runner.setup()
+
+    site = web.TCPSite(runner, "0.0.0.0", port)
+    await site.start()
+
+    return runner

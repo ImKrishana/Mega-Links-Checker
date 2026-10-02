@@ -1,0 +1,7 @@
+services:
+  thezake:
+    build: .
+    container_name: thezake
+    restart: unless-stopped
+    env_file:
+      - .env
