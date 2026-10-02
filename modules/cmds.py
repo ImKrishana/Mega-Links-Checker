@@ -38,6 +38,8 @@ CHECK_FORMAT = (
     'Lɪɴᴋ : <a href="{link}">Cʟɪᴄᴋ Hᴇʀᴇ</a>'
 )
 
+FOOTER = "\n\n<i>Cʜᴇᴄᴋᴇᴅ ʙʏ @MegaLinksCheckBot</i>"
+
 LINK_REGEX = (
     r"https:\/\/(?:www\.)?(?:mega\.nz|mega\.co\.nz)"
     r"\/(?:file|folder)\/[\w-]+(?:#[\w-]+)?"
@@ -108,6 +110,7 @@ async def send_log(client, sender, links, results):
             f"<b>Lɪɴᴋs:</b> <code>{len(links)}</code>\n"
             f"<b>Vᴀʟɪᴅ:</b> <code>{len(results)}</code>\n\n"
             + "\n\n".join(results)
+            + FOOTER
         )
 
         await client.send_message(
@@ -203,7 +206,7 @@ async def auto_check_mega(client, message):
     if not results:
         await edit_message(
             wait,
-            "<b>Nᴏ Vᴀʟɪᴅ MEGA Iɴғᴏ Fᴏᴜɴᴅ.</b>"
+            "<b>Nᴏ Vᴀʟɪᴅ MEGA Iɴғᴏ Fᴏᴜɴᴅ.</b>" + FOOTER
         )
         return
 
@@ -226,7 +229,7 @@ async def auto_check_mega(client, message):
 
     await edit_message(
         wait,
-        "\n\n".join(results),
+        "\n\n".join(results) + FOOTER,
         buttons,
     )
 
@@ -243,7 +246,7 @@ async def start_cmd(client, message):
 
         await send_message(
             message,
-            WELCOME,
+            WELCOME + FOOTER,
             buttons.build_menu(1),
             disable_web_page_preview=False,
             link_preview_options=LinkPreviewOptions(
@@ -300,4 +303,3 @@ async def ping(_, message):
             f"<code>{int((end_time - start_time) * 1000)} ms</code>"
         )
     )
-    
