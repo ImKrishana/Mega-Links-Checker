@@ -3,7 +3,7 @@ services:
     name: MegaLinksChecker
     runtime: python
     repo: https://github.com/ImKrishana/Mega-Links-Checker
-    branch: dev
+    branch: main
     plan: free
     envVars:
       - key: API_ID
