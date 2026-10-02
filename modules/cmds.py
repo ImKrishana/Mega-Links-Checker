@@ -1,4 +1,5 @@
 import asyncio
+import html
 import os
 import re
 import sys
@@ -56,11 +57,11 @@ def get_sender(message):
 
 def parse_mega_json(data, link):
     return CHECK_FORMAT.format(
-        name=data.get("name", "-"),
-        type_=data.get("type", "-"),
+        name=html.escape(str(data.get("name", "-"))),
+        type_=html.escape(str(data.get("type", "-"))),
         files=data.get("files", "-"),
         folders=data.get("folders", "-"),
-        size=data.get("sizeFormatted", "-"),
+        size=html.escape(str(data.get("sizeFormatted", "-"))),
         link=link,
     )
 
