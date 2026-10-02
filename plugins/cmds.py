@@ -8,7 +8,7 @@ IMG = "https://i.ibb.co/xK56gh8W/photo-2025-11-14-13-10-23-7572567765697953804.j
 EFCT = 5104841245755180586
 
 btns = InlineKeyboardMarkup(
-    [[InlineKeyboardButton("Repo", url="https://github.com/XalFH/Mega-Links-Checker")]]
+    [[InlineKeyboardButton("Repo", url="https://github.com/Imkrishana/Mega-Links-Checker")]]
 )
 
 @Client.on_message((filters.text | filters.caption) & ~filters.command(["start"]))
