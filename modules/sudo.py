@@ -23,7 +23,9 @@ from helpers.xtra import (
     new_task,
     update_user_ldata,
 )
+
 bc_cache = {}
+
 
 def get_readable_time(seconds: int):
     periods = [("d", 86400), ("h", 3600), ("m", 60), ("s", 1)]
@@ -33,6 +35,7 @@ def get_readable_time(seconds: int):
             period_value, seconds = divmod(seconds, period_seconds)
             result += f"{int(period_value)}{period_name}"
     return result
+
 
 def _parse_time(time_str):
     time_str = time_str.strip().lower()
@@ -213,10 +216,10 @@ async def add_blacklist(_, message):
             "<b>Pᴇʀᴍᴀɴᴇɴᴛ:</b> <code>/bl {user_id}</code>\n"
             "<b>Tᴇᴍᴘᴏʀᴀʀʏ:</b> <code>/bl {user_id} -t 1d</code>\n"
             "<b>Rᴇᴘʟʏ:</b> <code>/bl -t 2h</code> "
-            "<i>(reply to user)</i>\n"
+            "<i>(Rᴇᴘʟʏ Tᴏ Uѕᴇʀ)</i>\n"
             "<b>Tɪᴍᴇ Fᴏʀᴍᴀᴛ:</b> <code>3d</code> | "
             "<code>12h</code> | <code>20m</code> "
-            "<i>(any digit)</i>"
+            "<i>(Aɴʏ Dɪɢɪᴛ)</i>"
         )
 
         return await send_message(message, help_msg)
@@ -257,7 +260,7 @@ async def add_blacklist(_, message):
             f"<b>Uѕᴇʀ:</b> <code>{id_}</code>\n"
             "<b>Tʏᴘᴇ:</b> Tᴇᴍᴘᴏʀᴀʀʏ\n"
             f"<b>Dᴜʀᴀᴛɪᴏɴ:</b> <code>{remaining}</code>\n"
-            f"<b>Eхᴘɪʀᴇs:</b> <i>{remaining} from now</i>"
+            f"<b>Eхᴘɪʀᴇs:</b> <i>{remaining} Fʀᴏᴍ Nᴏᴡ</i>"
         )
 
     else:
@@ -338,6 +341,7 @@ async def black_listed(_, message):
         "<b>Bʟᴀᴄᴋʟɪsᴛᴇᴅ Dᴇᴛᴇᴄᴛᴇᴅ</b>\n"
         "<i>Rᴇsᴛʀɪᴄᴛᴇᴅ ғʀᴏᴍ Bᴏᴛ</i>"
     )
+
 
 @new_task
 async def log(_, message):
@@ -444,10 +448,11 @@ async def log_cb(_, query):
 
 async def delete_broadcast(bc_id, message):
     if bc_id not in bc_cache:
-        return await send_message(message, "Invalid Broadcast ID!")
+        return await send_message(message, "Iɴᴠᴀʟɪᴅ Bʀᴏᴀᴅᴄᴀsᴛ ID!")
 
     temp_wait = await send_message(
-        message, "<i>Deleting the Broadcasted Message! Please Wait ...</i>"
+        message,
+        "<i>Dᴇʟᴇᴛɪɴɢ Tʜᴇ Bʀᴏᴀᴅᴄᴀsᴛᴇᴅ Mᴇssᴀɢᴇ! Pʟᴇᴀsᴇ Wᴀɪᴛ ...</i>"
     )
     total, success, failed = 0, 0, 0
     msgs = bc_cache.get(bc_id, [])
@@ -465,21 +470,23 @@ async def delete_broadcast(bc_id, message):
         total += 1
     return await edit_message(
         temp_wait,
-        f"""⌬  <b><i>Broadcast Deleted Stats :</i></b>
-┠ <b>Total Users:</b> <code>{total}</code>
-┠ <b>Success:</b> <code>{success}</code>
-┖ <b>Failed Attempts:</b> <code>{failed}</code>
+        f"""<b><i>Bʀᴏᴀᴅᴄᴀsᴛ Dᴇʟᴇᴛᴇᴅ Sᴛᴀᴛs :</i></b>
 
-<b>Broadcast ID:</b> <code>{bc_id}</code>""",
+<b>Tᴏᴛᴀʟ Uѕᴇʀs:</b> <code>{total}</code>
+<b>Sᴜᴄᴄᴇss:</b> <code>{success}</code>
+<b>Fᴀɪʟᴇᴅ Aᴛᴛᴇᴍᴘᴛs:</b> <code>{failed}</code>
+
+<b>Bʀᴏᴀᴅᴄᴀsᴛ ID:</b> <code>{bc_id}</code>""",
     )
 
 
 async def edit_broadcast(bc_id, message, rply):
     if bc_id not in bc_cache:
-        return await send_message(message, "Invalid Broadcast ID!")
+        return await send_message(message, "Iɴᴠᴀʟɪᴅ Bʀᴏᴀᴅᴄᴀsᴛ ID!")
 
     temp_wait = await send_message(
-        message, "<i>Editing the Broadcasted Message! Please Wait ...</i>"
+        message,
+        "<i>Eᴅɪᴛɪɴɢ Tʜᴇ Bʀᴏᴀᴅᴄᴀsᴛᴇᴅ Mᴇssᴀɢᴇ! Pʟᴇᴀsᴇ Wᴀɪᴛ ...</i>"
     )
     total, success, failed = 0, 0, 0
     for uid, msg_id in bc_cache[bc_id]:
@@ -487,7 +494,7 @@ async def edit_broadcast(bc_id, message, rply):
         if hasattr(msg, "forward_from"):
             return await edit_message(
                 temp_wait,
-                "<i>Forwarded Messages can't be Edited, Only can be Deleted!</i>",
+                "<i>Fᴏʀᴡᴀʀᴅᴇᴅ Mᴇssᴀɢᴇs Cᴀɴ'ᴛ Bᴇ Eᴅɪᴛᴇᴅ, Oɴʟʏ Cᴀɴ Bᴇ Dᴇʟᴇᴛᴇᴅ!</i>",
             )
         try:
             await msg.edit(
@@ -511,12 +518,13 @@ async def edit_broadcast(bc_id, message, rply):
         total += 1
     return await edit_message(
         temp_wait,
-        f"""⌬  <b><i>Broadcast Edited Stats :</i></b>
-┠ <b>Total Users:</b> <code>{total}</code>
-┠ <b>Success:</b> <code>{success}</code>
-┖ <b>Failed Attempts:</b> <code>{failed}</code>
+        f"""<b><i>Bʀᴏᴀᴅᴄᴀsᴛ Eᴅɪᴛᴇᴅ Sᴛᴀᴛs :</i></b>
 
-<b>Broadcast ID:</b> <code>{bc_id}</code>""",
+<b>Tᴏᴛᴀʟ Uѕᴇʀs:</b> <code>{total}</code>
+<b>Sᴜᴄᴄᴇss:</b> <code>{success}</code>
+<b>Fᴀɪʟᴇᴅ Aᴛᴛᴇᴍᴘᴛs:</b> <code>{failed}</code>
+
+<b>Bʀᴏᴀᴅᴄᴀsᴛ ID:</b> <code>{bc_id}</code>""",
     )
 
 
@@ -525,7 +533,7 @@ async def broadcast(_, message):
     bc_id, forwarded, quietly, deleted, edited = "", False, False, False, False
     if not Config.DATABASE_URL:
         return await send_message(
-            message, "DATABASE_URL not provided to fetch PM Users!"
+            message, "DATABASE_URL Nᴏᴛ Pʀᴏᴠɪᴅᴇᴅ Tᴏ Fᴇᴛᴄʜ PM Uѕᴇʀs!"
         )
     rply = message.reply_to_message
     if len(message.command) > 1:
@@ -536,7 +544,7 @@ async def broadcast(_, message):
             if not bc_id:
                 return await send_message(
                     message,
-                    "<i>Broadcast ID not found! After Restart, you can't edit or delete broadcasted messages...</i>",
+                    "<i>Bʀᴏᴀᴅᴄᴀsᴛ ID Nᴏᴛ Fᴏᴜɴᴅ! Aғᴛᴇʀ Rᴇsᴛᴀʀᴛ, Yᴏᴜ Cᴀɴ'ᴛ Eᴅɪᴛ Oʀ Dᴇʟᴇᴛᴇ Bʀᴏᴀᴅᴄᴀsᴛᴇᴅ Mᴇssᴀɢᴇs...</i>",
                 )
         for arg in message.command:
             if arg in ["-f", "-forward"] and rply:
@@ -550,43 +558,44 @@ async def broadcast(_, message):
     if not bc_id and not rply:
         return await send_message(
             message,
-            """<b>By replying to msg to Broadcast:</b>
+            """<b>Bʏ Rᴇᴘʟʏɪɴɢ Tᴏ Mᴇssᴀɢᴇ Tᴏ Bʀᴏᴀᴅᴄᴀsᴛ:</b>
 /broadcast bc_id -d -e -f -q
 
-<b>Forward Broadcast with Tag:</b> -f or -forward
+<b>Fᴏʀᴡᴀʀᴅ Bʀᴏᴀᴅᴄᴀsᴛ Wɪᴛʜ Tᴀɢ:</b> -f Oʀ -forward
 /cmd [reply_msg] -f
 
-<b>Quietly Broadcast msg:</b> -q or -quiet
+<b>Qᴜɪᴇᴛʟʏ Bʀᴏᴀᴅᴄᴀsᴛ Mᴇssᴀɢᴇ:</b> -q Oʀ -quiet
 /cmd [reply_msg] -q -f
 
-<b>Edit Broadcast msg:</b> -e or -edit
+<b>Eᴅɪᴛ Bʀᴏᴀᴅᴄᴀsᴛ Mᴇssᴀɢᴇ:</b> -e Oʀ -edit
 /cmd [reply_edited_msg] broadcast_id -e
 
-<b>Delete Broadcast msg:</b> -d or -delete
+<b>Dᴇʟᴇᴛᴇ Bʀᴏᴀᴅᴄᴀsᴛ Mᴇssᴀɢᴇ:</b> -d Oʀ -delete
 /bc broadcast_id -d
 
-<b>Notes:</b>
-1. Broadcast msgs can be only edited or deleted until restart.
-2. Forwarded msgs can't be Edited""",
+<b>Nᴏᴛᴇs:</b>
+1. Bʀᴏᴀᴅᴄᴀsᴛ Mᴇssᴀɢᴇs Cᴀɴ Bᴇ Oɴʟʏ Eᴅɪᴛᴇᴅ Oʀ Dᴇʟᴇᴛᴇᴅ Uɴᴛɪʟ Rᴇsᴛᴀʀᴛ.
+2. Fᴏʀᴡᴀʀᴅᴇᴅ Mᴇssᴀɢᴇs Cᴀɴ'ᴛ Bᴇ Eᴅɪᴛᴇᴅ""",
         )
     if deleted:
         return await delete_broadcast(bc_id, message)
     elif edited:
         return await edit_broadcast(bc_id, message, rply)
 
-    # Broadcasting logic
     start_time = time()
-    status = """⌬  <b><i>Broadcast Stats :</i></b>
-┠ <b>Total Users:</b> <code>{t}</code>
-┠ <b>Success:</b> <code>{s}</code>
-┠ <b>Blocked Users:</b> <code>{b}</code>
-┠ <b>Deleted Accounts:</b> <code>{d}</code>
-┖ <b>Unsuccess Attempt:</b> <code>{u}</code>"""
+    status = """<b><i>Bʀᴏᴀᴅᴄᴀsᴛ Sᴛᴀᴛs :</i></b>
+
+<b>Tᴏᴛᴀʟ Uѕᴇʀs:</b> <code>{t}</code>
+<b>Sᴜᴄᴄᴇss:</b> <code>{s}</code>
+<b>Bʟᴏᴄᴋᴇᴅ Uѕᴇʀs:</b> <code>{b}</code>
+<b>Dᴇʟᴇᴛᴇᴅ Aᴄᴄᴏᴜɴᴛs:</b> <code>{d}</code>
+<b>Uɴsᴜᴄᴄᴇss Aᴛᴛᴇᴍᴘᴛ:</b> <code>{u}</code>"""
     updater = time()
     bc_hash, bc_msgs = token_hex(5), []
     pls_wait = await send_message(message, status.format(t=0, s=0, b=0, d=0, u=0))
     t, s, b, d, u = 0, 0, 0, 0, 0
     for uid in await database.get_pm_uids():
+        bc_msg = None
         try:
             bc_msg = (
                 await rply.forward(uid, disable_notification=quietly)
@@ -620,5 +629,5 @@ async def broadcast(_, message):
     bc_cache[bc_hash] = bc_msgs
     await edit_message(
         pls_wait,
-        f"{status.format(t=t, s=s, b=b, d=d, u=u)}\n\n<b>Elapsed Time:</b> <code>{get_readable_time(time() - start_time)}</code>\n<b>Broadcast ID:</b> <code>{bc_hash}</code>",
+        f"{status.format(t=t, s=s, b=b, d=d, u=u)}\n\n<b>Eʟᴀᴘsᴇᴅ Tɪᴍᴇ:</b> <code>{get_readable_time(time() - start_time)}</code>\n<b>Bʀᴏᴀᴅᴄᴀsᴛ ID:</b> <code>{bc_hash}</code>",
     )
